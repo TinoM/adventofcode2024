@@ -1,8 +1,7 @@
-mod day1;
-use day1::Day1;
+extern crate adventofcode2024;
+extern crate aoc_runner_derive;
+extern crate aoc_runner;
 
-fn main() {
-    let day1 = Day1{};
-    println!("Day 1 Part 1 : {}",day1.compute("input/day1.txt"));
-    println!("Day 1 Part 2 : {}",day1.compute2("input/day1.txt"));
-}
+use aoc_runner_derive::aoc_main;
+
+aoc_main! { lib = adventofcode2024 }
