@@ -1,11 +1,5 @@
-use std::fmt::Display;
-
-use itertools::Itertools;
-
-type Lists = (Vec<u32>, Vec<u32>);
-
-#[aoc_generator(day1)]
-pub fn input_generator(input: &str) -> Lists {
+#[aoc_generator(day1,part1,default)]
+pub fn input_generator(input: &str) -> (Vec<u32>, Vec<u32>) {
     let mut a = Vec::with_capacity(1000);
     let mut b = Vec::with_capacity(1000);
     input.lines().for_each(|l| {
@@ -19,19 +13,34 @@ pub fn input_generator(input: &str) -> Lists {
     (a, b)
 }
 
-#[aoc(day1, part1,old)]
-pub fn part1_old(input: &Lists) -> u32 {
-    // input.0.sort();
-    input.0
-        .iter()
-        .sorted_unstable()
-        .zip(input.1.iter().sorted_unstable())
-        .map(|(&a,&b)| a.abs_diff(b))
-        .sum()
+#[aoc_generator(day1,part2,default)]
+pub fn input_generator2(input: &str) -> (Vec<u32>, Vec<u32>) {
+    let mut a = Vec::with_capacity(1000);
+    let mut b = Vec::with_capacity(1000);
+    input.lines().for_each(|l| {
+        let mut pair = l
+        // .trim()
+        .split_ascii_whitespace()
+        .map(|d| d.parse().unwrap());
+        a.push(pair.next().unwrap());
+        b.push(pair.next().unwrap());
+    });
+    (a, b)
 }
 
-#[aoc(day1, part1,clone)]
-pub fn part1_dev(input: &Lists) -> u32 {
+// #[aoc(day1, part1)]
+// pub fn part1_old(input: &Lists) -> u32 {
+//     // input.0.sort();
+//     input.0
+//         .iter()
+//         .sorted_unstable()
+//         .zip(input.1.iter().sorted_unstable())
+//         .map(|(&a,&b)| a.abs_diff(b))
+//         .sum()
+// }
+
+#[aoc(day1, part1,default)]
+pub fn part1_dev(input: &(Vec<u32>,Vec<u32>)) -> u32 {
     let mut a = input.0.clone();
     let mut b = input.1.clone();
     a.sort_unstable();
@@ -44,7 +53,8 @@ pub fn part1_dev(input: &Lists) -> u32 {
         .sum()
 }
 
-pub fn part1(input:&str) -> impl Display{
+#[aoc(day1, part1, speed)]
+pub fn part1(input:&str) -> u32 {
     let mut a:Vec<u32> = Vec::with_capacity(1000);
     let mut b:Vec<u32> = Vec::with_capacity(1000);
     input.lines().for_each(|l| {
@@ -65,24 +75,32 @@ pub fn part1(input:&str) -> impl Display{
         .sum::<u32>()
 }
 
-pub fn part2(input:&str) -> impl Display{
+#[aoc(day1, part2, speed)]
+pub fn part2(input:&str) -> u32 {
     let mut a:Vec<u32> = Vec::with_capacity(1000);
-    let mut b:Vec<u32> = Vec::with_capacity(1000);
+    // let mut b:Vec<u32> = Vec::with_capacity(1000);
+    let mut counts = [0; 100000];
     input.lines().for_each(|l| {
         let mut pair = l
         // .trim()
         .split_ascii_whitespace()
         .map(|d| d.parse().unwrap());
         a.push(pair.next().unwrap());
-        b.push(pair.next().unwrap());
+        let k = pair.next().unwrap();
+        counts[k as usize] += k;
     });
-    let mut counts = [0; 100000];
-    b.iter().for_each(|&i| counts[i as usize] += i);
+    
+    // b.iter().for_each(|&i| counts[i as usize] += i);
     a.iter().map(|&p| counts[p as usize]).sum::<u32>()
 }
 
-#[aoc(day1, part2)]
-pub fn part2_old(input: &Lists) -> u32 { 
+// #[aoc_generator(day1,part2,speed)]
+// pub fn input_generator_speed(input: &str) -> &str {
+//     input
+// }
+
+#[aoc(day1, part2, default)]
+pub fn part2_dev(input: &(Vec<u32>,Vec<u32>)) -> u32 { 
     let mut counts = [0; 100000];
     input.1.iter().for_each(|&i| counts[i as usize] += i);
     input.0.iter().map(|&p| counts[p as usize]).sum()
@@ -96,7 +114,7 @@ mod tests {
     // A present with dimensions 2x3x4 requires 2*6 + 2*12 + 2*8 = 52 square feet of wrapping paper plus 6 square feet of slack, for a total of 58 square feet.
     fn example1() {
         assert_eq!(
-            part1(&input_generator(
+            part1_dev(&input_generator(
                 "3   4
 4   3
 2   5
@@ -112,7 +130,7 @@ mod tests {
     // A present with dimensions 1x1x10 requires 2*1 + 2*10 + 2*10 = 42 square feet of wrapping paper plus 1 square foot of slack, for a total of 43 square feet.
     fn example2() {
         assert_eq!(
-            part2(&input_generator(
+            part2_dev(&input_generator(
                 "3   4
         4   3
         2   5
