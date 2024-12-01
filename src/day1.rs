@@ -28,10 +28,11 @@ pub fn solve_part1(input: &[Pair]) -> usize {
 
 #[aoc(day1, part2)]
 pub fn solve_part2(input: &[Pair]) -> usize {
-    let counts = input.iter().counts_by(|e|e.1);
+    let mut counts = [0;100000];
+    input.iter().for_each(|i|counts[i.1]+=1);
     input
         .iter()
-        .map(|p| p.0 * counts.get(&p.1).unwrap_or(&0))
+        .map(|p| p.0 * counts[p.1])
         .sum()
 }
 
