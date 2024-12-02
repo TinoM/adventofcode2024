@@ -9,47 +9,28 @@ fn part1(input: &str) -> usize {
             .flat_map(|x| x.parse())
             .collect::<Vec<u8>>();
 
-        if check_report(&report, false) {
+        if check_report(&report) {
             safe_reports += 1;
         }
     }
     safe_reports
 }
 
-fn check_report(report: &[u8], dampener_active: bool) -> bool {
+fn check_report(report: &[u8]) -> bool {
     let mut c = None;
-    eprintln!("{report:?}");
-
     let mut idx1 = 0;
     let mut idx2 = 1;
-    let mut dampening_used = !dampener_active;
     while idx2 < report.len() {
-        eprintln!("Cmp: {} {}", report[idx1], report[idx2]);
         match report[idx1].cmp(&report[idx2]) {
             std::cmp::Ordering::Equal => {
-                if !dampening_used {
-                    eprintln!("Dampening used ==");
-                    dampening_used = true;
-                } else {
-                    return false;
-                }
+                return false;
             }
             diff => {
                 if report[idx1].abs_diff(report[idx2]) > 3 {
-                    if !dampening_used {
-                        eprintln!("Dampening used diff > 3");
-                        dampening_used = true;
-                    } else {
-                        return false;
-                    }
+                    return false;
                 } else if let Some(diff_prev) = c {
                     if diff != diff_prev {
-                        if !dampening_used {
-                            eprintln!("Dampening used switch");
-                            dampening_used = true;
-                        } else {
-                            return false;
-                        }
+                        return false;
                     }
                 } else {
                     c = Some(diff);
@@ -70,11 +51,17 @@ fn part2(input: &str) -> usize {
             .split_ascii_whitespace()
             .flat_map(|x| x.parse())
             .collect::<Vec<u8>>();
-        if check_report(&report, true) {
-            eprintln!("{report:?} is safe");
+        if check_report(&report) {
             safe_reports += 1;
         } else {
-            eprintln!("{report:?} is unsafe");
+            for skip in 0..report.len() {
+                let mut report = report.clone();
+                report.remove(skip);
+                if check_report(&report) {
+                    safe_reports += 1;
+                    break;
+                }
+            }
         }
     }
     safe_reports
