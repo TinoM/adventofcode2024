@@ -268,7 +268,6 @@ pub fn part2(input: &str) -> usize {
                 }
             },
         }
-        // eprintln!("{c} : {counter} : {switchcounter} : {a} : {b} : {sum} : {enabled}");
     }
     sum
 }
