@@ -1,7 +1,7 @@
 use aoc_runner_derive::aoc;
 
 #[aoc(day2, part1)]
-fn part1(input: &str) -> usize {
+pub fn part1(input: &str) -> usize {
     let mut safe_reports = 0;
     for line in input.lines() {
         let report = line
@@ -95,7 +95,7 @@ fn part2_old(input: &str) -> usize {
 }
 
 #[aoc(day2, part2,optimize)]
-fn part2(input: &str) -> usize {
+pub fn part2(input: &str) -> usize {
     let mut safe_reports = 0;
     for line in input.lines() {
         let report = line
