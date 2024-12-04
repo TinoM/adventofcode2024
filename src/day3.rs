@@ -287,7 +287,7 @@ mod tests {
     #[test]
     fn part1_speed_test() {
         assert_eq!(
-            part1_speed("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"),
+            part1_old("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"),
             161
         );
     }
@@ -295,14 +295,14 @@ mod tests {
     #[test]
     fn part2_example() {
         assert_eq!(
-            part2("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"),
+            part2_old("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"),
             48
         );
     }
     #[test]
     fn part2_example2() {
         assert_eq!(
-            part2_speed("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"),
+            part2("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"),
             48
         );
     }
