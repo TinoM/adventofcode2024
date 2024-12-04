@@ -88,19 +88,20 @@ pub fn part1(input: &str) -> usize {
 
 #[aoc(day4, part2)]
 pub fn part2(input: &str) -> usize {
-    let grid: Vec<char> = input.chars().filter(|c|c.is_alphabetic()).collect();
-    let height = input.lines().count();
-    let width = input.lines().next().unwrap().len();
+    let mut height = 0;
+    let grid = input.lines().map(|l|{height+=1;l.chars()}).flatten().collect::<Vec<char>>();
+    // let grid: Vec<char> = input.chars().filter(|c|c.is_alphabetic()).collect();
     // eprintln!("{} {}",height,width);
+    let width = grid.len()/height;
     let mut sol = 0;
     for y in 0..height-2 {
         for x in 0..width-2 {
                 // eprintln!("{} {}",x,y); 
-                let one = &grid[y*width+x..=y*width+x+2];
-                let two = &grid[(y+1)*width+x..=(y+1)*width+x+2];
-                let three = &grid[(y+2)*width+x..=(y+2)*width+x+2];
+                // let one = &grid[y*width+x..=y*width+x+2];
+                // let two = &grid[(y+1)*width+x..=(y+1)*width+x+2];
+                // let three = &grid[(y+2)*width+x..=(y+2)*width+x+2];
 
-                if two[1] == 'A' && ((one[0] == 'M' && three[2] == 'S') || one[0] == 'S' && three[2] == 'M') && ((one[2] == 'M' && three[0] == 'S') || one[2] == 'S' && three[0] == 'M') {
+                if grid[(y+1)*width+x+1] == 'A' && ((grid[y*width+x] == 'M' && grid[(y+2)*width+x+2] == 'S') || grid[y*width+x] == 'S' && grid[(y+2)*width+x+2] == 'M') && ((grid[y*width+x+2] == 'M' && grid[(y+2)*width+x]== 'S') || grid[y*width+x+2] == 'S' && grid[(y+2)*width+x] == 'M') {
                     sol += 1;
                     // eprintln!("{:?}",one);
                     // eprintln!("{two:?}");
