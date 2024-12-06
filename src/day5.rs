@@ -7,7 +7,7 @@ pub fn part1(input: &str) -> usize {
     let mut lines = input.lines();
     let mut solution = 0;
     let mut dic:HashMap<u8, Vec<u8>> = HashMap::new();
-    'd: while let Some(line) = lines.next() {
+    while let Some(line) = lines.next() {
         // line.split("|").flat_map(|d|d.parse::<u8>()).tuples().for_each(|(a,b)| {
         //     dic.entry(a).and_modify(|d|d.push(b)).or_insert(vec![b]);    
         // });
@@ -22,7 +22,7 @@ pub fn part1(input: &str) -> usize {
                 continue;
             } else {
                 // eprintln!("{} => {} {:?}",line,i,tmp);
-                tmp[i] = tmp[i]*10 +(b as char).to_digit(10).unwrap() as u8;
+                tmp[i] = tmp[i]*10 +(b-48) as u8;
             }
         }
         // eprintln!("{} => {:?}",line,tmp);
@@ -38,7 +38,19 @@ pub fn part1(input: &str) -> usize {
 }
 
 fn check(input: &str,dic:&HashMap<u8,Vec<u8>>) -> usize {
-    let nums:Vec<u8> = input.split(",").flat_map(|d|d.parse::<u8>()).collect();
+    // let nums:Vec<u8> = input.split(",").flat_map(|d|d.parse::<u8>()).collect();
+    let mut nums = vec![];
+    let mut tmp = 0;
+    for c in input.bytes() {
+        if c == b',' {
+            nums.push(tmp);
+            tmp = 0;
+            continue;
+        } else {
+            tmp = tmp*10 +(c-48) as u8;
+        }
+    }
+    nums.push(tmp);
     if nums.iter().tuple_windows().all(|(a,b)|dic.get(a).map_or(false,|d|d.contains(b))) {
         nums[nums.len()/2] as usize
     } else {
@@ -47,7 +59,18 @@ fn check(input: &str,dic:&HashMap<u8,Vec<u8>>) -> usize {
 }
 
 fn check2(input: &str,dic:&HashMap<u8,Vec<u8>>) -> usize {
-    let mut nums:Vec<u8> = input.split(",").flat_map(|d|d.parse::<u8>()).collect();
+    let mut nums = vec![];
+    let mut tmp = 0;
+    for c in input.bytes() {
+        if c == b',' {
+            nums.push(tmp);
+            tmp = 0;
+            continue;
+        } else {
+            tmp = tmp*10 +(c-48) as u8;
+        }
+    }
+    nums.push(tmp);
     if nums.iter().tuple_windows().all(|(a,b)|dic.get(a).map_or(false,|d|d.contains(b))) {
         0
     } else {
@@ -73,12 +96,25 @@ pub fn part2(input: &str) -> usize {
     let mut solution = 0;
     let mut dic:HashMap<u8, Vec<u8>> = HashMap::new();
     while let Some(line) = lines.next() {
-        line.split("|").flat_map(|d|d.parse::<u8>()).tuples().for_each(|(a,b)| {
-            dic.entry(a).and_modify(|d|d.push(b)).or_insert(vec![b]);    
-        });
+        // line.split("|").flat_map(|d|d.parse::<u8>()).tuples().for_each(|(a,b)| {
+        //     dic.entry(a).and_modify(|d|d.push(b)).or_insert(vec![b]);    
+        // });
         if line.is_empty() {
             break;
         }
+        let mut tmp = [0,0];
+        let mut i = 0;
+        for  b in line.bytes() {
+            if b == b'|' {
+                i+=1;
+                continue;
+            } else {
+                // eprintln!("{} => {} {:?}",line,i,tmp);
+                tmp[i] = tmp[i]*10 +(b-48) as u8;
+            }
+        }
+        // eprintln!("{} => {:?}",line,tmp);
+        dic.entry(tmp[0]).and_modify(|d|d.push(tmp[1])).or_insert(vec![tmp[1]]);
     }
     // eprintln!("{:?}",dic);
     solution += lines.map(|line|{
