@@ -7,18 +7,31 @@ pub fn part1(input: &str) -> usize {
     let mut lines = input.lines();
     let mut solution = 0;
     let mut dic:HashMap<u8, Vec<u8>> = HashMap::new();
-    while let Some(line) = lines.next() {
-        line.split("|").flat_map(|d|d.parse::<u8>()).tuples().for_each(|(a,b)| {
-            dic.entry(a).and_modify(|d|d.push(b)).or_insert(vec![b]);    
-        });
+    'd: while let Some(line) = lines.next() {
+        // line.split("|").flat_map(|d|d.parse::<u8>()).tuples().for_each(|(a,b)| {
+        //     dic.entry(a).and_modify(|d|d.push(b)).or_insert(vec![b]);    
+        // });
         if line.is_empty() {
             break;
         }
+        let mut tmp = [0,0];
+        let mut i = 0;
+        for  b in line.bytes() {
+            if b == b'|' {
+                i+=1;
+                continue;
+            } else {
+                // eprintln!("{} => {} {:?}",line,i,tmp);
+                tmp[i] = tmp[i]*10 +(b as char).to_digit(10).unwrap() as u8;
+            }
+        }
+        // eprintln!("{} => {:?}",line,tmp);
+        dic.entry(tmp[0]).and_modify(|d|d.push(tmp[1])).or_insert(vec![tmp[1]]);
     }
-    eprintln!("{:?}",dic);
+    // eprintln!("{:?}",dic);
     solution += lines.map(|line|{
         let c = check(line,&dic);
-        eprintln!("{} -> {}",line,c);
+        // eprintln!("{} -> {}",line,c);
         c
     }).sum::<usize>();
     solution
@@ -67,10 +80,10 @@ pub fn part2(input: &str) -> usize {
             break;
         }
     }
-    eprintln!("{:?}",dic);
+    // eprintln!("{:?}",dic);
     solution += lines.map(|line|{
         let c = check2(line,&dic);
-        eprintln!("{} -> {}",line,c);
+        // eprintln!("{} -> {}",line,c);
         c
     }).sum::<usize>();
     solution
@@ -112,7 +125,7 @@ mod tests {
 97,13,75,29,47";
 
     #[test]
-    fn part1_example() {
+    fn test_opt() {
         assert_eq!(part1(TESTDATA), 143);
     }
 
