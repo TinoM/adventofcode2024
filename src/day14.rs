@@ -8,34 +8,71 @@ const HEIGHT:i32 = 103;
 #[aoc(day14, part1)]
 pub fn part1(input: &str) -> i32 {
     let (mut q1,mut q2,mut q3,mut q4) = (0,0,0,0);
-    Regex::new(r"p=(\d+),(\d+) v=(-?\d+),(-?\d+)")
-        .unwrap()
-        .captures_iter(input)
-        .for_each(|cap| {
-            let x = cap[1].parse::<i32>().unwrap();
-            let y = cap[2].parse::<i32>().unwrap();
-            let mut vx = cap[3].parse::<i32>().unwrap();
-            let mut vy = cap[4].parse::<i32>().unwrap();
-            if vx < 0 {
-                vx = WIDTH as i32+vx;
+    let mut sign = 1;
+    let mut vals = [0;4];
+    let mut current_digit = 0;
+    for b in input.bytes() {
+        match b {
+            b'-' => sign = -1,
+            10 => {
+                //reset
+                vals[current_digit]*=sign;
+                // eprintln!("Byteparser: {:?}", vals);
+                if vals[2] < 0 {
+                    vals[2] = WIDTH as i32+vals[2];
+                }
+                if vals[3] < 0 {
+                    vals[3] = HEIGHT as i32+vals[3];
+                }
+                vals[0] = (vals[0] + (100 * vals[2])) % WIDTH;
+                vals[1] = (vals[1] + (100 * vals[3])) % HEIGHT;
+                // eprintln!("{} {} {} {}", x, y,vx,vy);
+                if vals[0] < WIDTH/2 && vals[1] < HEIGHT/2 {
+                    q1 += 1;
+                } else if vals[0] > WIDTH/2 && vals[1] < HEIGHT/2 {
+                    q2 += 1;
+                } else if vals[0] < WIDTH/2 && vals[1] > HEIGHT/2 {
+                    q3 += 1;
+                } else if vals[0] > WIDTH/2 && vals[1] > HEIGHT/2 {
+                    q4 += 1;
+                }
+                sign = 1;
+                current_digit = 0;
+                vals = [0;4];
+            },
+            b','|b' ' => {
+                vals[current_digit]*=sign;
+                current_digit += 1;
+                sign = 1;
+            },
+            b'p'|b'v'|b'='|13 => {},
+            v => {
+                // eprintln!("{:?}",vals);
+                vals[current_digit] = vals[current_digit] * 10 + (v - b'0') as i32;
+                // eprintln!("{} {} {} {}", current_digit, v as char,vals[current_digit],(v - b'0') as i32);
             }
-            if vy < 0 {
-                vy = HEIGHT as i32+vy;
-            }
-            let x = (x + (100 * vx)) % WIDTH;
-            let y = (y + (100 * vy)) % HEIGHT;
-            // eprintln!("{} {} {} {}", x, y,vx,vy);
-            if x < WIDTH/2 && y < HEIGHT/2 {
-                q1 += 1;
-            } else if x > WIDTH/2 && y < HEIGHT/2 {
-                q2 += 1;
-            } else if x < WIDTH/2 && y > HEIGHT/2 {
-                q3 += 1;
-            } else if x > WIDTH/2 && y > HEIGHT/2 {
-                q4 += 1;
-            }
-        });
-    
+        }   
+    }
+    vals[current_digit]*=sign;
+    if vals[2] < 0 {
+        vals[2] = WIDTH as i32+vals[2];
+    }
+    if vals[3] < 0 {
+        vals[3] = HEIGHT as i32+vals[3];
+    }
+    vals[0] = (vals[0] + (100 * vals[2])) % WIDTH;
+    vals[1] = (vals[1] + (100 * vals[3])) % HEIGHT;
+    // eprintln!("{} {} {} {}", x, y,vx,vy);
+    if vals[0] < WIDTH/2 && vals[1] < HEIGHT/2 {
+        q1 += 1;
+    } else if vals[0] > WIDTH/2 && vals[1] < HEIGHT/2 {
+        q2 += 1;
+    } else if vals[0] < WIDTH/2 && vals[1] > HEIGHT/2 {
+        q3 += 1;
+    } else if vals[0] > WIDTH/2 && vals[1] > HEIGHT/2 {
+        q4 += 1;
+    }
+    // eprintln!("{vals:?} {:?}",input.bytes().rev().take(30).collect::<Vec<u8>>());    
     // eprintln!("Q1: {} Q2: {} Q3: {} Q4: {}", q1, q2, q3, q4);
     q1 * q2 * q3 * q4
 }
