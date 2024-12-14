@@ -11,6 +11,7 @@ pub fn part1(input: &str) -> i32 {
     let mut sign = 1;
     let mut vals = [0;4];
     let mut current_digit = 0;
+    eprintln!("Linebreaks: {}",input.bytes().filter(|&b| b == 10).count());
     for b in input.bytes() {
         match b {
             b'-' => sign = -1,
